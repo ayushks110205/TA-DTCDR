@@ -1,0 +1,26 @@
+# Data files - too large for git, regenerate via notebooks/00_fetch_dataset_kaggle.py
+data/raw/*.parquet
+data/processed/*.parquet
+data/processed/*.json
+data/tags/*.json
+data/tags/*.pt
+
+# Model checkpoints - large binary files
+checkpoints/*.pt
+checkpoints/*.pth
+
+# Results - keep small summary files, ignore large logs if any
+results/*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Secrets - NEVER commit API keys
+.env
+*.key
+
+# OS
+.DS_Store

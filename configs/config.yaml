@@ -1,0 +1,52 @@
+# TA-DTCDR config — hyperparameters from paper Section 5.1.4
+# Adjust paths / API keys via environment variables, not this file.
+
+data:
+  domains: [book, movie]         # music dropped from scope for this project
+  raw_dir: data/raw
+  processed_dir: data/processed
+  tags_dir: data/tags
+  target_n_users: 17000          # subsample down to roughly paper's Table 1 scale
+  min_user_interactions: 5      # k-core filtering threshold, applied AFTER subsampling
+  min_item_interactions: 5
+  split_ratio: [0.8, 0.1, 0.1]  # train, valid, test
+  negative_samples_eval: 99     # per Section 5.1.2, leave-one-out eval
+
+llm:
+  model_sample: gpt-4           # for representative few-shot sample generation
+  model_bulk: gpt-4o-mini       # for bulk tagging of all items
+  tags_per_item: 5
+  tag_freq_threshold: 80        # keep tags appearing in >=80 items, in both domains
+
+embedding:
+  fasttext_dim: 300
+  hidden_dim: 128
+  autoencoder_dims: [300, 256, 128]
+
+model:
+  embedding_size: 128
+  num_gcn_layers: 2             # paper default — see ablation sweep in notebooks/
+  dropout: 0.3
+  tsa_mlp_dims: [128, 256, 128]
+  tcl_mlp_dims: [128, 256, 128]
+
+loss:
+  lambda_reg: 0.001
+  lambda_tsa: 1.0
+  lambda_tcl: 0.001
+
+train:
+  optimizer: adam
+  lr: 0.001
+  batch_size: 1024
+  epochs: 50
+  neg_sample_ratio: 1
+  eval_every: 1
+  patience: 10                  # early stopping on validation NDCG@10
+
+eval:
+  k: 10                         # HR@10, NDCG@10
+
+ablation:
+  layer_sweep: [1, 2, 3, 4]     # custom experiment: test over-smoothing hypothesis
+  tag_threshold_sweep: [0, 20, 40, 60, 80, 100, 150, 200]
